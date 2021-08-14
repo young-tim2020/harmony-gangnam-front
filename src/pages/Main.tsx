@@ -1,6 +1,15 @@
 import { Button, Container, Grid, TextField } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import React from "react";
+import axios from 'axios';
+
+
+axios.get('/Main')
+.then(function (response){
+  console.log(response);
+})
+.catch(function (error){
+  console.log(error);
+});
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -75,3 +84,5 @@ function Main() {
 }
 
 export default Main;
+
+
