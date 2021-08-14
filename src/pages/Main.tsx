@@ -3,7 +3,29 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import axios from 'axios';
 
 
-axios.get('/Main')
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    container: {
+      display: "flex",
+      flexWrap: "wrap",
+      alignItems: "center"
+    },
+    textField: {
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+      width: 200,
+      marginTop:'100px'
+      
+    },
+  })
+);
+
+function Main() {
+  const classes = useStyles();
+  
+useEffect(()=> {
+  axios
+.get("http://localhost:3000/main")
 .then(function (response){
   console.log(response);
 })
@@ -11,25 +33,20 @@ axios.get('/Main')
   console.log(error);
 });
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    container: {
-      display: "flex",
-      flexWrap: "wrap",
-    },
-    textField: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      width: 200,
-    },
-  })
-);
-
-function Main() {
-  const classes = useStyles();
+}, []);
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="sm" >
+    <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Button size="large" variant="contained" color="primary" href="/Admin" >
+          마니또 Start!!
+        </Button>
+      </Grid>
       <Grid
         container
         direction="row"
@@ -69,16 +86,7 @@ function Main() {
           />
         </form>
       </Grid>
-      <Grid
-        container
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Button variant="contained" color="primary" href="#contained-buttons">
-          마니또 Start!!
-        </Button>
-      </Grid>
+      
     </Container>
   );
 }

@@ -9,13 +9,13 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/ParticipantJoin">
+        <Route path="/participantjoin">
           <Participants />
         </Route>
-        <Route path="/Main">
+        <Route path="/main">
           <Main />
         </Route>
-        <Route path="/Admin">
+        <Route path="/admin">
           <Admin />
         </Route>
       </Switch>
