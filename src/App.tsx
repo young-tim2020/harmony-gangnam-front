@@ -4,12 +4,14 @@ import "./App.css";
 import Admin from "./pages/Admin";
 import Main from "./pages/Main";
 import Participants from "./pages/ParticipantJoin";
-import ParticipantResult from "./pages/ParticipantResult"
-import AdminResult from "./pages/AdminResult"
+import ParticipantResult from "./pages/ParticipantResult";
+import AdminResult from "./pages/AdminResult";
+import { CssBaseline } from "@material-ui/core";
 
 function App() {
   return (
     <Router>
+      <CssBaseline />
       <Switch>
         <Route path="/participants/join">
           <Participants />
@@ -17,14 +19,14 @@ function App() {
         <Route path="/participants/result">
           <ParticipantResult />
         </Route>
-        <Route path="/main">
-          <Main />
-        </Route>
         <Route path="/admin/result">
           <AdminResult />
         </Route>
         <Route path="/admin">
           <Admin />
+        </Route>
+        <Route path="/">
+          <Main />
         </Route>
       </Switch>
     </Router>
