@@ -3,12 +3,14 @@ import {
   Card,
   Container,
   Grid,
+  Modal,
   TextField,
   Typography,
 } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import axios from "axios";
-import { useEffect } from "react";
+import moment from "moment";
+import { FormEvent, useState } from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,21 +31,39 @@ const useStyles = makeStyles((theme: Theme) =>
 function Main() {
   const classes = useStyles();
 
-  useEffect(() => {
+  const now = moment();
+  let [start, setStart] = useState(
+    now.add(30, "minutes").format("YYYY-MM-DDTH:mm")
+  );
+
+  let [end, setEnd] = useState(now.add(7, "days").format("YYYY-MM-DDTH:mm"));
+
+  console.log(`start :${start} / end : ${end}`);
+
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+
     axios
-      .get("http://localhost:5000/main")
+      .post("http://localhost:5000/manito", {
+        start,
+        end,
+      })
       .then(function (response) {
-        console.log(response);
+        console.log("data", response.data);
+        const { data } = response || {};
+        console.log(
+          `adminLinkId : ${data.adminLinkId}", linkId : ${data.linkId}`
+        );
       })
       .catch(function (error) {
         console.log(error);
       });
-  }, []);
+  };
 
   return (
     <Container className={classes.container} component="main" maxWidth="sm">
       <Card style={{ flex: 1 }}>
-        <form className={classes.form} noValidate action="/manito">
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <Grid
             container
             direction="column"
@@ -62,7 +82,7 @@ function Main() {
                 label="시작 시간"
                 name="start"
                 type="datetime-local"
-                defaultValue="2017-05-24T10:30"
+                defaultValue={start}
                 className={classes.textField}
                 variant="outlined"
                 InputLabelProps={{
@@ -76,7 +96,7 @@ function Main() {
                 label="종료 시간"
                 name="end"
                 type="datetime-local"
-                defaultValue="2017-05-24T10:30"
+                defaultValue={end}
                 className={classes.textField}
                 variant="outlined"
                 InputLabelProps={{
