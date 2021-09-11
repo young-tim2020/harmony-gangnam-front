@@ -38,6 +38,9 @@ function Main() {
 
   let [end, setEnd] = useState(now.add(7, "days").format("YYYY-MM-DDTH:mm"));
 
+  let [adminLinkId, setAdminLinkId] = useState(undefined);
+  let [linkId, setLinkId] = useState(undefined);
+
   console.log(`start :${start} / end : ${end}`);
 
   const handleSubmit = (event: FormEvent) => {
@@ -54,11 +57,98 @@ function Main() {
         console.log(
           `adminLinkId : ${data.adminLinkId}", linkId : ${data.linkId}`
         );
+        setLinkId(data.linkId)
+        setAdminLinkId(data.adminLinkId)
       })
       .catch(function (error) {
         console.log(error);
       });
   };
+
+  if(linkId != null){
+    return(
+      <Container className={classes.container} component="main" maxWidth="sm">
+       <Card style={{ flex: 1 }}>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
+         <Grid
+            container
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            spacing={4}
+            >
+           <Grid item xs={11}>
+            <TextField
+              id="datetime-local"
+              label = "개인링크 입니다."
+              size = 'medium'
+              defaultValue = {linkId}
+              className={classes.textField}
+              variant="outlined"
+              InputLabelProps={{
+                  shrink: true,
+                }}
+            />
+           </Grid>
+           <Grid item xs={12}>
+              <Button
+                type="submit"
+                size="small"
+                variant="contained"
+                color="primary"
+              >
+                확인
+              </Button>
+           </Grid>
+         </Grid>
+        </form>
+       </Card>
+      </Container>
+    );
+
+    if(adminLinkId != null){
+     return(
+      <Container className={classes.container} component="main" maxWidth="sm">
+       <Card style={{ flex: 1 }}>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
+         <Grid
+            container
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            spacing={4}
+            >
+           <Grid item xs={11}>
+            <TextField
+              id="datetime-local"
+              label = "개인링크 입니다."
+              size = 'medium'
+              defaultValue = {adminLinkId}
+              className={classes.textField}
+              variant="outlined"
+              InputLabelProps={{
+                  shrink: true,
+                }}
+            />
+           </Grid>
+           <Grid item xs={12}>
+              <Button
+                type="submit"
+                size="small"
+                variant="contained"
+                color="primary"
+              >
+                확인
+              </Button>
+           </Grid>
+         </Grid>
+        </form>
+       </Card>
+      </Container>
+     );
+    }
+  }
+
 
   return (
     <Container className={classes.container} component="main" maxWidth="sm">
@@ -83,6 +173,9 @@ function Main() {
                 name="start"
                 type="datetime-local"
                 defaultValue={start}
+                onChange= {(e)=>{
+                  console.log(e.target.value);
+                }}
                 className={classes.textField}
                 variant="outlined"
                 InputLabelProps={{
@@ -97,6 +190,9 @@ function Main() {
                 name="end"
                 type="datetime-local"
                 defaultValue={end}
+                onChange= {(e)=>{
+                  console.log(e.target.value);
+                }}
                 className={classes.textField}
                 variant="outlined"
                 InputLabelProps={{
