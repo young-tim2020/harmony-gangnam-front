@@ -28,6 +28,9 @@ function App() {
         <Route path="/">
           <Main />
         </Route>
+        <Route path="/participants/join/:linkId" component={Participants}>
+          <Participants />
+        </Route>
       </Switch>
     </Router>
   );
