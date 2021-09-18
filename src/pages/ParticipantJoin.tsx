@@ -20,7 +20,10 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 
+
 function ParticipantJoin() {
+
+
 
   const classes = useStyles();
   return (
@@ -32,8 +35,6 @@ function ParticipantJoin() {
         alignItems="center"
       >
     <form className={classes.root} noValidate autoComplete="off">
-    
-     <div>    마니또 등록해주세요~    </div>
      <div>
       <TextField required id="standard-required" label="이름"></TextField>
      </div>
@@ -48,24 +49,3 @@ function ParticipantJoin() {
   );
 }
 export default ParticipantJoin;
-
-// function ParticipantLink() {
-
-//   const classes = useStyles();
-//   return (
-    
-//     <form className={classes.root} noValidate autoComplete="off">
-//      <div>ParticipantJoin</div>
-//     <div>
-//       <TextField required id="standard-required" label="이름"></TextField>
-//     </div>
-//     <div>
-//       <Button size="large" variant="contained" color="primary" href="/">
-//           등록
-//         </Button> 
-//     </div>
-//     </form>
-//   );
-// }
-
-//export default ParticipantLink;
