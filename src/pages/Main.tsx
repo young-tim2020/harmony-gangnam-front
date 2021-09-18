@@ -1,16 +1,19 @@
 import {
-  Button,
   Card,
   Container,
   Grid,
-  Modal,
   TextField,
   Typography,
+  Tooltip,
 } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import axios from "axios";
 import moment from "moment";
 import { FormEvent, useState } from "react";
+import Button from "@material-ui/core/Button";
+import {copyToClipboard} from "../common/util";
+import {HOST, BACKEND_SERVER} from "../common/constants";
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,127 +31,95 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const useStartEndDefault = () => {
+  const now = moment();
+  const start = now.add(30, "minutes").format("YYYY-MM-DDTH:mm");
+  const end = now.add(7, "days").format("YYYY-MM-DDTH:mm");
+  return [start, end]
+}
+
 function Main() {
   const classes = useStyles();
 
-  const now = moment();
-  let [start, setStart] = useState(
-    now.add(30, "minutes").format("YYYY-MM-DDTH:mm")
-  );
-
-  let [end, setEnd] = useState(now.add(7, "days").format("YYYY-MM-DDTH:mm"));
+  const [startDefault, endDefault] = useStartEndDefault();
+  let [start, setStart] = useState(startDefault);
+  let [end, setEnd] = useState(endDefault);
 
   let [adminLinkId, setAdminLinkId] = useState(undefined);
-  let [linkId, setLinkId] = useState(undefined);
-
-  console.log(`start :${start} / end : ${end}`);
+  let [joinLinkId, setJoinLinkId] = useState(undefined);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
     axios
-      .post("http://localhost:5000/manito", {
+      .post(`${BACKEND_SERVER}/manito`, {
         start,
         end,
       })
       .then(function (response) {
-        console.log("data", response.data);
         const { data } = response || {};
-        console.log(
-          `adminLinkId : ${data.adminLinkId}", linkId : ${data.linkId}`
-        );
-        setLinkId(data.linkId)
-        setAdminLinkId(data.adminLinkId)
+        setJoinLinkId(data.linkId);
+        setAdminLinkId(data.adminLinkId);
       })
       .catch(function (error) {
         console.log(error);
       });
   };
 
-  if(linkId != null){
-    return(
-      <Container className={classes.container} component="main" maxWidth="sm">
-       <Card style={{ flex: 1 }}>
-        <form className={classes.form} noValidate onSubmit={handleSubmit}>
-         <Grid
-            container
-            direction="column"
-            alignItems="center"
-            justifyContent="center"
-            spacing={4}
-            >
-           <Grid item xs={11}>
-            <TextField
-              id="datetime-local"
-              label = "개인링크 입니다."
-              size = 'medium'
-              defaultValue = {linkId}
-              className={classes.textField}
-              variant="outlined"
-              InputLabelProps={{
-                  shrink: true,
-                }}
-            />
-           </Grid>
-           <Grid item xs={12}>
-              <Button
-                type="submit"
-                size="small"
-                variant="contained"
-                color="primary"
-              >
-                확인
-              </Button>
-           </Grid>
-         </Grid>
-        </form>
-       </Card>
-      </Container>
+  function getLinkDisplay(joinLink: string, adminLink: string) {
+    return (
+        <Container className={classes.container} component="main" maxWidth="sm">
+          <Card style={{flex: 1, padding: "30px", flexGrow: 1}}>
+            <Grid container spacing={4} style={{flex: 1, padding: "30px"}}>
+              <Grid item xs={10} style={{flexGrow: 1}}>
+                <Tooltip title={joinLink}>
+                  <Typography
+                      style={{
+                        textOverflow: "ellipsis",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                      }}
+                  >{`참가자 등록 링크 : ${joinLink}`}</Typography>
+                </Tooltip>
+              </Grid>
+              <Grid item xs={2}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      copyToClipboard(joinLink)
+                    }}
+                >
+                  복사
+                </Button>
+              </Grid>
+              <Grid item xs={10}>
+                <Typography
+                    style={{
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                    }}
+                >{`마니또 관리 링크 : ${adminLink}`}</Typography>
+              </Grid>
+              <Grid item xs={2}>
+                <Button variant="contained" color="primary" onClick={() => {
+                  copyToClipboard(adminLink)
+                }}>
+                  복사
+                </Button>
+              </Grid>
+            </Grid>
+          </Card>
+        </Container>
     );
-
-    if(adminLinkId != null){
-     return(
-      <Container className={classes.container} component="main" maxWidth="sm">
-       <Card style={{ flex: 1 }}>
-        <form className={classes.form} noValidate onSubmit={handleSubmit}>
-         <Grid
-            container
-            direction="column"
-            alignItems="center"
-            justifyContent="center"
-            spacing={4}
-            >
-           <Grid item xs={11}>
-            <TextField
-              id="datetime-local"
-              label = "개인링크 입니다."
-              size = 'medium'
-              defaultValue = {adminLinkId}
-              className={classes.textField}
-              variant="outlined"
-              InputLabelProps={{
-                  shrink: true,
-                }}
-            />
-           </Grid>
-           <Grid item xs={12}>
-              <Button
-                type="submit"
-                size="small"
-                variant="contained"
-                color="primary"
-              >
-                확인
-              </Button>
-           </Grid>
-         </Grid>
-        </form>
-       </Card>
-      </Container>
-     );
-    }
   }
 
+  if (joinLinkId && adminLinkId) {
+    const joinLink = `${HOST}/participants/registration?program=${joinLinkId}`;
+    const adminLink = `${HOST}/admin?secret=${adminLinkId}`;
+    return getLinkDisplay(joinLink, adminLink);
+  }
 
   return (
     <Container className={classes.container} component="main" maxWidth="sm">
@@ -173,7 +144,7 @@ function Main() {
                 name="start"
                 type="datetime-local"
                 defaultValue={start}
-                onChange= {(e)=>{
+                onChange={(e) => {
                   console.log(e.target.value);
                 }}
                 className={classes.textField}
@@ -190,7 +161,7 @@ function Main() {
                 name="end"
                 type="datetime-local"
                 defaultValue={end}
-                onChange= {(e)=>{
+                onChange={(e) => {
                   console.log(e.target.value);
                 }}
                 className={classes.textField}

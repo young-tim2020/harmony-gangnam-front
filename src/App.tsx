@@ -13,7 +13,7 @@ function App() {
     <Router>
       <CssBaseline />
       <Switch>
-        <Route path="/participants/join">
+        <Route path="/participants/registration">
           <Participants />
         </Route>
         <Route path="/participants/result">
@@ -27,9 +27,6 @@ function App() {
         </Route>
         <Route path="/">
           <Main />
-        </Route>
-        <Route path="/participants/join/:linkId" component={Participants}>
-          <Participants />
         </Route>
       </Switch>
     </Router>
